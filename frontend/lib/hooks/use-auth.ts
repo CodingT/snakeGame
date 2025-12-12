@@ -76,7 +76,14 @@ export const useAuth = create<AuthState>()(
             error: null,
           })
         } catch (error) {
-          set({ isLoading: false })
+          // Force logout even if API call fails (e.g. backend restarted/token invalid)
+          set({
+            user: null,
+            token: null,
+            isAuthenticated: false,
+            isLoading: false,
+            error: null,
+          })
         }
       },
 

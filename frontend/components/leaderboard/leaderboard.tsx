@@ -15,7 +15,9 @@ export function Leaderboard() {
   useEffect(() => {
     const fetchLeaderboard = async () => {
       try {
+        console.log("Fetching leaderboard...")
         const data = await leaderboardApi.getLeaderboard(10)
+        console.log("Leaderboard data received:", data.length)
         setEntries(data)
       } catch (error) {
         console.error("[v0] Failed to fetch leaderboard:", error)
@@ -29,7 +31,13 @@ export function Leaderboard() {
     // Refresh leaderboard every 10 seconds
     const interval = setInterval(fetchLeaderboard, 10000)
 
-    return () => clearInterval(interval)
+    const handleUpdate = () => fetchLeaderboard()
+    window.addEventListener('leaderboard-update', handleUpdate)
+
+    return () => {
+      clearInterval(interval)
+      window.removeEventListener('leaderboard-update', handleUpdate)
+    }
   }, [])
 
   const getRankIcon = (rank: number) => {
@@ -43,6 +51,15 @@ export function Leaderboard() {
       default:
         return <span className="text-sm font-semibold text-muted-foreground w-5 text-center">{rank}</span>
     }
+  }
+
+  {/* Helper to render date safely */ }
+  const FormattedDate = ({ date }: { date: string }) => {
+    const [mounted, setMounted] = useState(false)
+    useEffect(() => setMounted(true), [])
+
+    if (!mounted) return null
+    return <>{new Date(date).toLocaleDateString()}</>
   }
 
   return (
@@ -70,15 +87,16 @@ export function Leaderboard() {
             {entries.map((entry) => (
               <div
                 key={entry.id}
-                className={`flex items-center justify-between p-3 rounded-lg transition-colors ${
-                  entry.rank <= 3 ? "bg-accent" : "bg-muted/50"
-                }`}
+                className={`flex items-center justify-between p-3 rounded-lg transition-colors ${entry.rank <= 3 ? "bg-accent" : "bg-muted/50"
+                  }`}
               >
                 <div className="flex items-center gap-3">
                   <div className="w-8 flex items-center justify-center">{getRankIcon(entry.rank)}</div>
                   <div>
                     <p className="font-semibold">{entry.username}</p>
-                    <p className="text-xs text-muted-foreground">{new Date(entry.createdAt).toLocaleDateString()}</p>
+                    <p className="text-xs text-muted-foreground">
+                      <FormattedDate date={entry.createdAt} />
+                    </p>
                   </div>
                 </div>
                 <Badge variant="secondary" className="text-lg font-bold px-3 py-1">

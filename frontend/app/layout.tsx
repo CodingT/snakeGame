@@ -7,25 +7,16 @@ const _geist = Geist({ subsets: ["latin"] });
 const _geistMono = Geist_Mono({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: 'v0 App',
-  description: 'Created with v0',
-  generator: 'v0.app',
+  title: 'Snake Game - Play & Compete',
+  description: 'Classic Snake game with global leaderboard. Play, compete, and climb the ranks!',
   icons: {
     icon: [
       {
-        url: '/icon-light-32x32.png',
-        media: '(prefers-color-scheme: light)',
-      },
-      {
-        url: '/icon-dark-32x32.png',
-        media: '(prefers-color-scheme: dark)',
-      },
-      {
-        url: '/icon.svg',
+        url: '/favicon.svg',
         type: 'image/svg+xml',
       },
     ],
-    apple: '/apple-icon.png',
+    apple: '/favicon.png',
   },
 }
 

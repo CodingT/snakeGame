@@ -99,11 +99,15 @@ export function SnakeGame() {
     try {
       await gameSessionApi.endSession(sessionIdRef.current, finalScore)
       await leaderboardApi.submitScore(user.id, user.username, finalScore)
+      console.log("Score submitted, dispatching event")
 
       toast({
         title: "Score Submitted!",
         description: `Your final score: ${finalScore}`,
       })
+
+      // Notify leaderboard to update
+      window.dispatchEvent(new CustomEvent('leaderboard-update'))
     } catch (error) {
       console.error("[v0] Failed to submit score:", error)
     }
@@ -116,7 +120,17 @@ export function SnakeGame() {
         sessionIdRef.current = session.id
       } catch (error) {
         console.error("[v0] Failed to create session:", error)
+        toast({
+          variant: "destructive",
+          title: "Connection Error",
+          description: "Could not create game session. Score verification may fail."
+        })
       }
+    } else {
+      toast({
+        title: "Playing as Guest",
+        description: "Log in to appear on the leaderboard!",
+      })
     }
 
     setGameState(initialGameState)
