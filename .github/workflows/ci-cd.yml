@@ -47,7 +47,6 @@ jobs:
         working-directory: ./backend
         run: |
           uv pip install --system -r pyproject.toml
-          uv pip install --system pytest pytest-asyncio
 
       - name: Run unit tests
         working-directory: ./backend
